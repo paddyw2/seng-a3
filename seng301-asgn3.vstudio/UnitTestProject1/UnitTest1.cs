@@ -109,7 +109,8 @@ namespace UnitTestProject1
         // HELPER METHOD
         //================
         // takes the expected delivery items and ensures that all
-        // expected items are in the the actual delivered items
+        // expected items are in the actual delivered items
+        // returns true if expected items are there, false if not
         public Boolean checkDelivery(List<IDeliverable> expectedList, List<IDeliverable> itemsList)
         {
             foreach (var item in expectedList)

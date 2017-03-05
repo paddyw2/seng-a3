@@ -91,11 +91,10 @@ namespace UnitTestProject1
                 Assert.Fail("Different number of items: " + itemsList.Count);
 
             List<IDeliverable> expectedList = new List<IDeliverable> { new PopCan("Coke") };
-            Boolean success = checkDelivery(expectedList, itemsList);
-            Assert.AreEqual(success, true);
+            // check if delivery correct
+            CollectionAssert.AreEqual(expectedList, itemsList);
 
-
-            VendingMachineStoredContents storedContents = new VendingMachineStoredContents();
+            var storedContents = new VendingMachineStoredContents();
             foreach(var coinRack in vm.CoinRacks) {
                 storedContents.CoinsInCoinRacks.Add(coinRack.Unload());
             }
@@ -103,6 +102,7 @@ namespace UnitTestProject1
             foreach(var popCanRack in vm.PopCanRacks) {
                 storedContents.PopCansInPopCanRacks.Add(popCanRack.Unload());
             }
+            // check if teardown correct
         }
 
         //================

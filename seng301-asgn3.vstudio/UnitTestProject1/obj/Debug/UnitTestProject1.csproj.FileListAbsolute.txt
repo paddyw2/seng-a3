@@ -1,0 +1,8 @@
+C:\Users\Paddy\Documents\seng-a3\seng301-a3\seng301-asgn3.vstudio\UnitTestProject1\bin\Debug\UnitTestProject1.dll
+C:\Users\Paddy\Documents\seng-a3\seng301-a3\seng301-asgn3.vstudio\UnitTestProject1\bin\Debug\UnitTestProject1.pdb
+C:\Users\Paddy\Documents\seng-a3\seng301-a3\seng301-asgn3.vstudio\UnitTestProject1\bin\Debug\Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll
+C:\Users\Paddy\Documents\seng-a3\seng301-a3\seng301-asgn3.vstudio\UnitTestProject1\bin\Debug\seng301-asgn2.dll
+C:\Users\Paddy\Documents\seng-a3\seng301-a3\seng301-asgn3.vstudio\UnitTestProject1\bin\Debug\seng301-asgn2.pdb
+C:\Users\Paddy\Documents\seng-a3\seng301-a3\seng301-asgn3.vstudio\UnitTestProject1\obj\Debug\UnitTestProject1.csprojResolveAssemblyReference.cache
+C:\Users\Paddy\Documents\seng-a3\seng301-a3\seng301-asgn3.vstudio\UnitTestProject1\obj\Debug\UnitTestProject1.dll
+C:\Users\Paddy\Documents\seng-a3\seng301-a3\seng301-asgn3.vstudio\UnitTestProject1\obj\Debug\UnitTestProject1.pdb

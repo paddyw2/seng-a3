@@ -152,7 +152,58 @@ namespace UnitTestProject1
             var items = vm.DeliveryChute.RemoveItems();
             var itemsList = new List<IDeliverable>(items);
 
-            Assert.AreEqual(true, true);
+            //===============
+            // Check Delivery
+            //===============
+            // now check items
+            int expectedItems = 3;
+            if (itemsList.Count != expectedItems)
+                Assert.Fail("Different number of items: " + itemsList.Count);
+
+            List<IDeliverable> expectedList = new List<IDeliverable> {
+                new PopCan("Coke"),
+                new Coin(25),
+                new Coin(25)
+            };
+            // check if delivery correct
+            Boolean success = checkDelivery(expectedList, itemsList);
+            Assert.AreEqual(success, true);
+
+            //===============
+            // Check Teardown
+            //===============
+            // check if teardown correct
+            // get the teardown items
+            var storedContents = new VendingMachineStoredContents();
+            foreach(var coinRack in vm.CoinRacks) {
+                Console.WriteLine("Unloading...");
+                storedContents.CoinsInCoinRacks.Add(coinRack.Unload());
+            }
+            storedContents.PaymentCoinsInStorageBin.AddRange(vm.StorageBin.Unload());
+            foreach(var popCanRack in vm.PopCanRacks) {
+                Console.WriteLine("Unloading pops...");
+                storedContents.PopCansInPopCanRacks.Add(popCanRack.Unload());
+            }
+
+            // create expected lists
+            var expectedStorageBin = new List<Coin>();
+            var expectedCoins = new List<List<Coin>> {
+                new List<Coin> { new Coin(5) },
+                new List<Coin> { new Coin(10) },
+                new List<Coin>(),
+                new List<Coin> { new Coin(100), new Coin(100), new Coin(100) }
+            };
+            var expectedPops = new List<List<PopCan>> {
+                new List<PopCan>(),
+                new List<PopCan> { new PopCan("water") },
+                new List<PopCan> { new PopCan("stuff") }
+            };
+            foreach(var popList in storedContents.PopCansInPopCanRacks)
+            {
+                Console.WriteLine(popList.Count);
+            }
+            success = checkTeardown(storedContents, expectedCoins, expectedPops, expectedStorageBin);
+            Assert.AreEqual(success, true);
         }
 
         //================
@@ -200,7 +251,7 @@ namespace UnitTestProject1
                     string name = pop.Name;
                     foreach (var delivered in itemsList)
                     {
-                        if (item.GetType() == typeof(PopCan))
+                        if (delivered.GetType() == typeof(PopCan))
                         {
                             PopCan delPop = (PopCan)delivered;
                             string delPopName = delPop.Name;
@@ -218,11 +269,11 @@ namespace UnitTestProject1
                     int coinVal = coinItem.Value;
                     foreach (var delivered in itemsList)
                     {
-                        if (item.GetType() == typeof(Coin))
+                        if (delivered.GetType() == typeof(Coin))
                         {
                             Coin delCoin = (Coin)delivered;
                             int delCoinVal = delCoin.Value;
-                            if (delCoinVal.Equals(coinVal))
+                            if (delCoinVal == coinVal)
                             {
                                 itemFound = true;
                                 break;

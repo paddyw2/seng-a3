@@ -13,6 +13,7 @@ namespace UnitTestProject1
         [TestMethod]
         public void CheckTestWorking()
         {
+            // get first test working
             Assert.AreEqual(true, true);
         }
 
@@ -78,12 +79,10 @@ namespace UnitTestProject1
             // get the teardown items
             var storedContents = new VendingMachineStoredContents();
             foreach(var coinRack in vm.CoinRacks) {
-                Console.WriteLine("Unloading...");
                 storedContents.CoinsInCoinRacks.Add(coinRack.Unload());
             }
             storedContents.PaymentCoinsInStorageBin.AddRange(vm.StorageBin.Unload());
             foreach(var popCanRack in vm.PopCanRacks) {
-                Console.WriteLine("Unloading pops...");
                 storedContents.PopCansInPopCanRacks.Add(popCanRack.Unload());
             }
 
@@ -102,7 +101,7 @@ namespace UnitTestProject1
             };
             foreach(var popList in storedContents.PopCansInPopCanRacks)
             {
-                Console.WriteLine(popList.Count);
+                //Console.WriteLine(popList.Count);
             }
             success = checkTeardown(storedContents, expectedCoins, expectedPops, expectedStorageBin);
             Assert.AreEqual(success, true);
@@ -176,12 +175,10 @@ namespace UnitTestProject1
             // get the teardown items
             var storedContents = new VendingMachineStoredContents();
             foreach(var coinRack in vm.CoinRacks) {
-                Console.WriteLine("Unloading...");
                 storedContents.CoinsInCoinRacks.Add(coinRack.Unload());
             }
             storedContents.PaymentCoinsInStorageBin.AddRange(vm.StorageBin.Unload());
             foreach(var popCanRack in vm.PopCanRacks) {
-                Console.WriteLine("Unloading pops...");
                 storedContents.PopCansInPopCanRacks.Add(popCanRack.Unload());
             }
 
@@ -200,7 +197,7 @@ namespace UnitTestProject1
             };
             foreach(var popList in storedContents.PopCansInPopCanRacks)
             {
-                Console.WriteLine(popList.Count);
+                //Console.WriteLine(popList.Count);
             }
             success = checkTeardown(storedContents, expectedCoins, expectedPops, expectedStorageBin);
             Assert.AreEqual(success, true);

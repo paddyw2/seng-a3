@@ -147,13 +147,13 @@ namespace UnitTestProject1
             int value = 0;
             vm.SelectionButtons[value].Press();
 
+            //===============
+            // Check Delivery
+            //===============
             // extract
             var items = vm.DeliveryChute.RemoveItems();
             var itemsList = new List<IDeliverable>(items);
 
-            //===============
-            // Check Delivery
-            //===============
             // now check items
             int expectedItems = 3;
             if (itemsList.Count != expectedItems)
@@ -203,6 +203,79 @@ namespace UnitTestProject1
             Assert.AreEqual(success, true);
         }
 
+        //================
+        // T03 Test Method
+        //================
+        // This method recreates and tests
+        // the second good test script
+        [TestMethod]
+        public void goodTeardownWithoutConfigureOrLoad()
+        {
+            // set up create values
+            int[] coinKindArray = { 5, 10, 25, 100 };
+            int selectionButtonCount = 3;
+            int coinRackCapacity = 10;
+            int popRackCapcity = 10;
+            int receptacleCapacity = 10;
+            // create vending machine, and vending machine logic using
+            // these values
+            var vm = new VendingMachine(coinKindArray, selectionButtonCount, coinRackCapacity, popRackCapcity, receptacleCapacity);
+            new VendingMachineLogic(vm);
+
+            //===============
+            // Check Delivery
+            //===============
+            // extract
+            var items = vm.DeliveryChute.RemoveItems();
+            var itemsList = new List<IDeliverable>(items);
+
+            // now check items
+            int expectedItems = 0;
+            if (itemsList.Count != expectedItems)
+                Assert.Fail("Different number of items: " + itemsList.Count);
+
+            List<IDeliverable> expectedList = new List<IDeliverable>();
+
+            // check if delivery correct
+            Boolean success = checkDelivery(expectedList, itemsList);
+            Assert.AreEqual(success, true);
+
+            //===============
+            // Check Teardown
+            //===============
+            // check if teardown correct
+            // get the teardown items
+            var storedContents = new VendingMachineStoredContents();
+            foreach(var coinRack in vm.CoinRacks) {
+                storedContents.CoinsInCoinRacks.Add(coinRack.Unload());
+            }
+            storedContents.PaymentCoinsInStorageBin.AddRange(vm.StorageBin.Unload());
+            foreach(var popCanRack in vm.PopCanRacks) {
+                storedContents.PopCansInPopCanRacks.Add(popCanRack.Unload());
+            }
+
+            // create expected lists
+            var expectedStorageBin = new List<Coin>();
+            var expectedCoins = new List<List<Coin>> {
+                new List<Coin>(),
+                new List<Coin>(),
+                new List<Coin>(),
+                new List<Coin>()
+            };
+            var expectedPops = new List<List<PopCan>> {
+                new List<PopCan>(),
+                new List<PopCan>(),
+                new List<PopCan>()
+            };
+            foreach(var popList in storedContents.PopCansInPopCanRacks)
+            {
+                //Console.WriteLine(popList.Count);
+            }
+            success = checkTeardown(storedContents, expectedCoins, expectedPops, expectedStorageBin);
+            Assert.AreEqual(success, true);
+        }
+
+        
         //================
         // HELPER METHODS
         //================

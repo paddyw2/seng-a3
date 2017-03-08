@@ -1,4 +1,13 @@
-﻿using System;
+﻿//==================================//
+// UnitTest1 - Good Test Scripts    //
+//                                  //
+// This class contains unit tests   //
+// for all the 'good' test scripts  //
+// that is, test scripts which      //
+// should not fail                  //
+//==================================//
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Frontend2;
@@ -8,14 +17,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace UnitTestProject1
 {
     [TestClass]
-    public class UnitTest1
+    public class GoodTests
     {
-        [TestMethod]
-        public void CheckTestWorking()
-        {
-            // get first test working
-            Assert.AreEqual(true, true);
-        }
 
         //================
         // T01 Test Method
@@ -1278,7 +1281,268 @@ namespace UnitTestProject1
             Assert.AreEqual(success, true);
         }
 
-  
+        //================
+        // T12 Test Method
+        //================
+        // This method recreates and tests
+        // the twelfth good test script
+        [TestMethod]
+        public void T12goodApproximateChangeWithCredit()
+        {
+            // set up create values
+            int[] coinKindArray = { 5, 10, 25, 100 };
+            int selectionButtonCount = 1;
+            int coinRackCapacity = 10;
+            int popRackCapcity = 10;
+            int receptacleCapacity = 10;
+            // create vending machine, and vending machine logic using
+            // these values
+            var vm = new VendingMachine(coinKindArray, selectionButtonCount, coinRackCapacity, popRackCapcity, receptacleCapacity);
+            new VendingMachineLogic(vm);
+            // configure machine
+            List<string> popNames = new List<string> { "stuff" };
+            List<int> popCosts = new List<int> { 140 };
+            vm.Configure(popNames, popCosts);
+            // load coins
+            loadCoins(5, 0, 0, vm);
+            loadCoins(10, 5, 1, vm);
+            loadCoins(25, 1, 2, vm);
+            loadCoins(100, 1, 3, vm);
+
+            // load pops
+            loadPops("stuff", 1, 0, vm);
+
+            // now insert coins
+            insertCoins(new int[] { 100, 100, 100}, vm);
+
+            // press button
+            int value = 0;
+            vm.SelectionButtons[value].Press();
+
+            //===============
+            // Check Delivery
+            //===============
+            // extract
+            var items = vm.DeliveryChute.RemoveItems();
+            var itemsList = new List<IDeliverable>(items);
+
+            // now check items
+            int expectedItems = 6;
+            if (itemsList.Count != expectedItems)
+                Assert.Fail("Different number of items: " + itemsList.Count);
+
+            List<IDeliverable> expectedList = new List<IDeliverable>
+            {
+                new Coin(100),
+                new Coin(25),
+                new Coin(10),
+                new Coin(10),
+                new Coin(10),
+                new PopCan("stuff")
+            };
+
+            // check if delivery correct
+            Boolean success = checkDelivery(expectedList, itemsList);
+            Assert.AreEqual(success, true);
+
+            //===============
+            // Check Teardown
+            //===============
+            // check if teardown correct
+            // get the teardown items
+            var storedContents = new VendingMachineStoredContents();
+            foreach(var coinRack in vm.CoinRacks) {
+                storedContents.CoinsInCoinRacks.Add(coinRack.Unload());
+            }
+            storedContents.PaymentCoinsInStorageBin.AddRange(vm.StorageBin.Unload());
+            foreach(var popCanRack in vm.PopCanRacks) {
+                storedContents.PopCansInPopCanRacks.Add(popCanRack.Unload());
+            }
+
+            // create expected lists
+            var expectedStorageBin = new List<Coin>();
+            var expectedCoins = new List<List<Coin>> {
+                new List<Coin>(),
+                new List<Coin> { new Coin(10), new Coin(10) },
+                new List<Coin>(),
+                new List<Coin> { new Coin(100), new Coin(100), new Coin(100) }
+            };
+            var expectedPops = new List<List<PopCan>> {
+                new List<PopCan>()
+            };
+
+            success = checkTeardown(storedContents, expectedCoins, expectedPops, expectedStorageBin);
+            Assert.AreEqual(success, true);
+
+            // re-load coins
+            loadCoins(5, 10, 0, vm);
+            loadCoins(10, 10, 1, vm);
+            loadCoins(25, 10, 2, vm);
+            loadCoins(100, 10, 3, vm);
+
+            // re-load pops
+            loadPops("stuff", 1, 0, vm);
+
+            // insert coins
+            insertCoins(new int[] { 25, 100, 10 }, vm);
+
+            // press button
+            value = 0;
+            vm.SelectionButtons[value].Press();
+
+            //===============
+            // Check Delivery
+            //===============
+            // extract
+            items = vm.DeliveryChute.RemoveItems();
+            itemsList = new List<IDeliverable>(items);
+
+            // now check items
+            expectedItems = 1;
+            if (itemsList.Count != expectedItems)
+                Assert.Fail("Different number of items: " + itemsList.Count);
+
+            expectedList = new List<IDeliverable>
+            {
+                new PopCan("stuff")
+            };
+
+            // check if delivery correct
+            success = checkDelivery(expectedList, itemsList);
+            Assert.AreEqual(success, true);
+
+            //===============
+            // Check Teardown
+            //===============
+            // check if teardown correct
+            // get the teardown items
+            storedContents = new VendingMachineStoredContents();
+            foreach(var coinRack in vm.CoinRacks) {
+                storedContents.CoinsInCoinRacks.Add(coinRack.Unload());
+            }
+            storedContents.PaymentCoinsInStorageBin.AddRange(vm.StorageBin.Unload());
+            foreach(var popCanRack in vm.PopCanRacks) {
+                storedContents.PopCansInPopCanRacks.Add(popCanRack.Unload());
+            }
+
+            // create expected lists
+            expectedStorageBin = new List<Coin>
+            {
+                new Coin(25),
+                new Coin(100),
+                new Coin(10)
+            };
+            expectedCoins = new List<List<Coin>> {
+                new List<Coin> { new Coin(5), new Coin(5), new Coin(5), new Coin(5), new Coin(5), new Coin(5), new Coin(5), new Coin(5), new Coin(5), new Coin(5) },
+                new List<Coin> { new Coin(10), new Coin(10), new Coin(10), new Coin(10), new Coin(10), new Coin(10), new Coin(10), new Coin(10), new Coin(10), new Coin(10) },
+                new List<Coin> { new Coin(25), new Coin(25), new Coin(25), new Coin(25), new Coin(25), new Coin(25), new Coin(25), new Coin(25), new Coin(25), new Coin(25) },
+                new List<Coin> { new Coin(100), new Coin(100), new Coin(100), new Coin(100), new Coin(100), new Coin(100), new Coin(100), new Coin(100), new Coin(100), new Coin(100) },
+            };
+            expectedPops = new List<List<PopCan>> {
+                new List<PopCan>(),
+                new List<PopCan>(),
+                new List<PopCan>()
+            };
+
+            success = checkTeardown(storedContents, expectedCoins, expectedPops, expectedStorageBin);
+            Assert.AreEqual(success, true);
+        } 
+
+        //================
+        // T13 Test Method
+        //================
+        // This method recreates and tests
+        // the thirteenth good test script
+        [TestMethod]
+        public void T13goodNeedToStorePayment()
+        {
+            // set up create values
+            int[] coinKindArray = { 5, 10, 25, 100 };
+            int selectionButtonCount = 1;
+            int coinRackCapacity = 10;
+            int popRackCapcity = 10;
+            int receptacleCapacity = 10;
+            // create vending machine, and vending machine logic using
+            // these values
+            var vm = new VendingMachine(coinKindArray, selectionButtonCount, coinRackCapacity, popRackCapcity, receptacleCapacity);
+            new VendingMachineLogic(vm);
+            // configure machine
+            List<string> popNames = new List<string> { "stuff" };
+            List<int> popCosts = new List<int> { 135 };
+            vm.Configure(popNames, popCosts);
+            // load coins
+            loadCoins(5, 10, 0, vm);
+            loadCoins(10, 10, 1, vm);
+            loadCoins(25, 10, 2, vm);
+            loadCoins(100, 10, 3, vm);
+
+            // load pops
+            loadPops("stuff", 1, 0, vm);
+
+            // now insert coins
+            insertCoins(new int[] { 25, 100, 10}, vm);
+
+            // press button
+            int value = 0;
+            vm.SelectionButtons[value].Press();
+
+            //===============
+            // Check Delivery
+            //===============
+            // extract
+            var items = vm.DeliveryChute.RemoveItems();
+            var itemsList = new List<IDeliverable>(items);
+
+            // now check items
+            int expectedItems = 1;
+            if (itemsList.Count != expectedItems)
+                Assert.Fail("Different number of items: " + itemsList.Count);
+
+            List<IDeliverable> expectedList = new List<IDeliverable>
+            {
+                new PopCan("stuff") 
+            };
+
+            // check if delivery correct
+            Boolean success = checkDelivery(expectedList, itemsList);
+            Assert.AreEqual(success, true);
+
+            //===============
+            // Check Teardown
+            //===============
+            // check if teardown correct
+            // get the teardown items
+            var storedContents = new VendingMachineStoredContents();
+            foreach(var coinRack in vm.CoinRacks) {
+                storedContents.CoinsInCoinRacks.Add(coinRack.Unload());
+            }
+            storedContents.PaymentCoinsInStorageBin.AddRange(vm.StorageBin.Unload());
+            foreach(var popCanRack in vm.PopCanRacks) {
+                storedContents.PopCansInPopCanRacks.Add(popCanRack.Unload());
+            }
+
+            // create expected lists
+            var expectedStorageBin = new List<Coin>
+            {
+                new Coin(25),
+                new Coin(100),
+                new Coin(10)
+            };
+            var expectedCoins = new List<List<Coin>> {
+                new List<Coin> { new Coin(5), new Coin(5), new Coin(5), new Coin(5), new Coin(5), new Coin(5), new Coin(5), new Coin(5), new Coin(5), new Coin(5) },
+                new List<Coin> { new Coin(10), new Coin(10), new Coin(10), new Coin(10), new Coin(10), new Coin(10), new Coin(10), new Coin(10), new Coin(10), new Coin(10) },
+                new List<Coin> { new Coin(25), new Coin(25), new Coin(25), new Coin(25), new Coin(25), new Coin(25), new Coin(25), new Coin(25), new Coin(25), new Coin(25) },
+                new List<Coin> { new Coin(100), new Coin(100), new Coin(100), new Coin(100), new Coin(100), new Coin(100), new Coin(100), new Coin(100), new Coin(100), new Coin(100) },
+            };
+            var expectedPops = new List<List<PopCan>> {
+                new List<PopCan>(),
+                new List<PopCan>(),
+                new List<PopCan>()
+            };
+
+            success = checkTeardown(storedContents, expectedCoins, expectedPops, expectedStorageBin);
+            Assert.AreEqual(success, true);
+        }
         //======================================//
         //            HELPER METHODS            //
         //======================================//

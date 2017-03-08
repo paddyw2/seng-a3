@@ -50,8 +50,9 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="UnitTest1.cs" />
+    <Compile Include="GoodTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="BadTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\seng301-asgn3\seng301-asgn3.csproj">

@@ -1,10 +1,10 @@
 ﻿//==================================//
-// UnitTest2 - Good Test Scripts    //
+// UnitTest2 - Bad Test Scripts     //
 //                                  //
 // This class contains unit tests   //
-// for all the 'good' test scripts  //
+// for all the 'bad' test scripts   //
 // that is, test scripts which      //
-// should not fail                  //
+// should fail                      //
 //==================================//
 
 using System;
